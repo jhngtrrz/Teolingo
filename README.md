@@ -51,3 +51,64 @@ Any user is invited to report bugs, other issues, or feature requests. To do so,
 
 One of our core developers will come back to you as soon as possible to discuss the issue.
 
+# Configuración de BibleOL con Docker
+
+Este README proporciona instrucciones para configurar y ejecutar BibleOL usando Docker.
+
+## Requisitos previos
+
+- Docker instalado
+- Docker Compose instalado
+
+## Archivos utilizados
+
+- `docker-compose-ultra-simple.yml`: Archivo principal de configuración para Docker Compose
+
+## Configuración y ejecución
+
+1. Asegúrate de tener el archivo `docker-compose-ultra-simple.yml` en tu directorio de trabajo.
+
+2. Ejecuta el siguiente comando para iniciar el contenedor en modo desacoplado:
+
+```
+docker-compose -f docker-compose-ultra-simple.yml up -d
+```
+
+3. El servicio estará disponible en http://localhost:8000
+
+## Acceso a la aplicación
+
+Puedes acceder a la aplicación con las siguientes credenciales:
+
+- Usuario: admin
+- Contraseña: bibleol_pwd
+
+## Configuración adicional
+
+El archivo `docker-compose-ultra-simple.yml` incluye:
+
+- Imagen: tmccormack14/bibleol-amd:2023_12_12
+- Puerto: 8000
+- Variables de entorno para MySQL
+- Comandos de configuración automática
+
+## Solución de problemas
+
+Para ver los logs del contenedor:
+
+```
+docker logs bibleol-app
+```
+
+Para detener el contenedor:
+
+```
+docker-compose -f docker-compose-ultra-simple.yml down
+```
+
+Para reiniciar el contenedor:
+
+```
+docker-compose -f docker-compose-ultra-simple.yml restart
+```
+
