@@ -1,0 +1,36 @@
+FROM tmccormack14/bibleol-amd:2023_12_12
+
+# Información del mantenedor
+LABEL maintainer="tu_nombre <tu_email@ejemplo.com>"
+
+# Directorio de trabajo
+WORKDIR /var/www/html/BibleOL
+
+# Comando para iniciar servicios y configurar la aplicación
+CMD ["/bin/bash", "-c", "service mysql start && \
+                         sleep 5 && \
+                         mysql -u root -e \"CREATE USER IF NOT EXISTS 'tim'@'localhost' IDENTIFIED BY 'pwd'; CREATE DATABASE IF NOT EXISTS bibleol; GRANT ALL PRIVILEGES ON *.* TO 'tim'@'localhost' WITH GRANT OPTION; FLUSH PRIVILEGES;\" && \
+                         cd /var/www/html/BibleOL/myapp/config && \
+                         cp config.php-dist config.php && \
+                         cp database.php-dist database.php && \
+                         cp ol.php-dist ol.php && \
+                         sed -i -e \"s@https://example.com@http://localhost:8000@g\" config.php && \
+                         sed -i -e \"s@USERNAME@tim@g\" database.php && \
+                         sed -i -e \"s@PASSWORD@pwd@g\" database.php && \
+                         sed -i -e \"s@DATABASE@bibleol@g\" database.php && \
+                         sed -i -e \"s@localhost@127.0.0.1@g\" database.php && \
+                         sed -i -e \"s@array()@array('MyBH', 'RRG', 'Hinneh', 'AndrewsUniversity')@g\" ol.php && \
+                         cd /var/www/html/BibleOL && \
+                         mysql -u root bibleol < bolsetup.sql && \
+                         ./setup_lang.sh && \
+                         echo 'ServerName localhost' >> /etc/apache2/apache2.conf && \
+                         a2enmod rewrite && \
+                         echo \"<Directory /var/www/html/BibleOL>\" >> /etc/apache2/apache2.conf && \
+                         echo \"  AllowOverride All\" >> /etc/apache2/apache2.conf && \
+                         echo \"</Directory>\" >> /etc/apache2/apache2.conf && \
+                         chown -R www-data:www-data /var/www/html/BibleOL && \
+                         chmod -R 775 /var/www/html/BibleOL && \
+                         service apache2 restart && \
+                         sleep 2 && \
+                         php index.php users generate_administrator admin 'Default Admin' bibleol_pwd && \
+                         tail -f /dev/null"] 

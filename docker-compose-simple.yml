@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile-simple
+    container_name: bibleol-simple
+    ports:
+      - "8000:80"
+    environment:
+      - MYSQL_USER=tim
+      - MYSQL_PASSWORD=pwd
+      - MYSQL_DATABASE=bibleol
+      - BASE_URL=http://localhost:8000 
